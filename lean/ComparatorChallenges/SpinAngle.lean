@@ -409,7 +409,9 @@ def missingCellFactor (m b : ℕ) : ℝ :=
 def missingCellProductFactor {ι : Type*} [Fintype ι] (m : ℕ) (b : ι → ℕ) : ℝ :=
   ∏ i, missingCellFactor m (b i)
 
-variable {R C : Type*} [Fintype R] [DecidableEq R] [Fintype C] [DecidableEq C]
+universe u_2 u_3
+
+variable {R : Type u_2} {C : Type u_3} [Fintype R] [DecidableEq R] [Fintype C] [DecidableEq C]
 
 def occupiedRow (W : Finset (R × C)) (i : R) : Finset C :=
   Finset.univ.filter (fun j => (i, j) ∈ W)
