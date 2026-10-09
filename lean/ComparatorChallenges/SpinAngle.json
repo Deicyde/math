@@ -4,11 +4,6 @@
   "theorem_names": [
     "OAI.SpinAngle.TypeAngle.one_sided_type_angle"
   ],
-  "definition_names": [
-    "OAI.SpinAngle.TypeAngle.row",
-    "OAI.SpinAngle.TypeAngle.column",
-    "OAI.SpinAngle.TypeAngle.phi"
-  ],
   "permitted_axioms": [
     "propext",
     "Quot.sound",
