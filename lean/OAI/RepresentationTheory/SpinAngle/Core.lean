@@ -4144,6 +4144,11 @@ lemma retained_product_le
   · have he : t = ∅ := Finset.not_nonempty_iff_eq_empty.mp ht
     simp [he]
 
+end SpinAngle
+
+namespace SpinAngle
+open scoped BigOperators
+
 variable {R C : Type*} [contextInstance3877_23 : Fintype R] [contextInstance3877_35 : DecidableEq R] [contextInstance3877_51 : Fintype C] [contextInstance3877_63 : DecidableEq C]
 
 
