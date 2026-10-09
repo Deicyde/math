@@ -81,7 +81,12 @@ abbrev OccupiedOverlapEndpoint : Prop :=
       allCopyOverlap (V := EuclideanSpace ℂ (Fin r)) (W := EuclideanSpace ℂ (Fin c))
         (X := hilbertSpace a) I J ≤
         Real.exp (C * (((m + n + 1 : ℕ) : ℝ) * (h : ℝ)^2 *
-          Real.log ((m * n : ℕ) + 2) + (m * n - Ω.card : ℕ))) *
+          -- The `2` is spelled out so that its `AtLeastTwo` proof is the same auxiliary lemma
+          -- as in `ComparatorChallenges/OccupiedOverlap.lean`, where Lean reuses the one
+          -- generated for `hilbertEquiv`.
+          Real.log ((m * n : ℕ) + @OfNat.ofNat ℝ (nat_lit 2) (@instOfNatAtLeastTwo ℝ (nat_lit 2)
+            Real.instNatCast OAI.CubeShuffle.Specht.hilbertEquiv._proof_1)) +
+            (m * n - Ω.card : ℕ))) *
           min 1 ((r : ℝ) * c / Module.finrank ℂ (space a))
 
 end RowColumn
