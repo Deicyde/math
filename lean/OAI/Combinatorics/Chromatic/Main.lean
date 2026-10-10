@@ -32,6 +32,11 @@ def elementaryPositivityWitness (n : ℕ)
   expansion r := ElementaryPositivity.FiniteSearch.uniform_expansion_of_test
     G G.historyWitness _ (ElementaryPositivity.FiniteSearch.selectedTable_test G) r
 
+theorem elementaryPositivityWitness_nonempty (n : ℕ)
+    (G : ElementaryPositivity.NaturalUnitIntervalGraph n) :
+    Nonempty G.PermutationWitness :=
+  ⟨elementaryPositivityWitness n G⟩
+
 end
 
 end OAI

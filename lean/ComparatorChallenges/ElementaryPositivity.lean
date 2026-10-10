@@ -55,9 +55,9 @@ structure PermutationWitness where
 end NaturalUnitIntervalGraph
 end ElementaryPositivity
 
-def elementaryPositivityWitness (n : ℕ)
+theorem elementaryPositivityWitness_nonempty (n : ℕ)
     (G : ElementaryPositivity.NaturalUnitIntervalGraph n) :
-    G.PermutationWitness := by
+    Nonempty G.PermutationWitness := by
   sorry
 
 end OAI
