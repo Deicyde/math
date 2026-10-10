@@ -16,6 +16,12 @@ open scoped ComplexConjugate
 
 namespace DefocusingNLS
 
+/-- The actual odd-power map on `H^k`, built from its bounded algebra operations. -/
+noncomputable def sobolevOddPower (k : ℝ) (hk : 6 < k) : ℕ → FourierL2 → FourierL2
+  | 0, f => f
+  | m + 1, f => sobolevProduct k hk
+      (sobolevProduct k hk (sobolevOddPower k hk m f) (fourierConjugate f)) f
+
 /-- Pointwise multiplication viewed as a continuous real-bilinear operation. -/
 noncomputable def sobolevRealBilinearProduct (k : ℝ) (hk : 6 < k) :
     FourierL2 →L[ℝ] FourierL2 →L[ℝ] FourierL2 :=
@@ -24,12 +30,6 @@ noncomputable def sobolevRealBilinearProduct (k : ℝ) (hk : 6 < k) :
 @[simp] theorem sobolevRealBilinearProduct_apply (k : ℝ) (hk : 6 < k)
     (f g : FourierL2) :
     sobolevRealBilinearProduct k hk f g = sobolevProduct k hk f g := rfl
-
-/-- The actual odd-power map on `H^k`, built from its bounded algebra operations. -/
-noncomputable def sobolevOddPower (k : ℝ) (hk : 6 < k) : ℕ → FourierL2 → FourierL2
-  | 0, f => f
-  | m + 1, f => sobolevProduct k hk
-      (sobolevProduct k hk (sobolevOddPower k hk m f) (fourierConjugate f)) f
 
 /-- Sobolev odd powers have exactly the claimed pointwise values on the torus. -/
 theorem sobolevOddPower_apply (k : ℝ) (hk : 6 < k) (m : ℕ)
