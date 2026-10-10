@@ -4,7 +4,8 @@
   "theorem_names": [
     "OAI.DefocusingNLS.stable_blowup",
     "OAI.DefocusingNLS.gaussian_blowup",
-    "OAI.DefocusingNLS.gaussian_not_almost_sure_global"
+    "OAI.DefocusingNLS.gaussian_not_almost_sure_global",
+    "OAI.DefocusingNLS.sobolevProduct_memℓp"
   ],
   "definition_names": [],
   "permitted_axioms": [

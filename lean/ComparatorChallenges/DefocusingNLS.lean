@@ -102,9 +102,14 @@ noncomputable def sobolevProductCoefficient (k : ℝ) (f g : FourierL2)
     (n : frequencyLattice) : ℂ :=
   ∑' m, sobolevFourierCoefficient k f m * sobolevFourierCoefficient k g (n - m)
 
-noncomputable def sobolevProduct (k : ℝ) (_hk : 6 < k) (f g : FourierL2) : FourierL2 :=
+-- The proof obligation below makes the Sobolev product well typed.
+theorem sobolevProduct_memℓp (k : ℝ) (hk : 6 < k) (f g : FourierL2) :
+    Memℓp (fun n => (sobolevProductWeight k n : ℂ) * sobolevProductCoefficient k f g n) 2 := by
+  sorry
+
+noncomputable def sobolevProduct (k : ℝ) (hk : 6 < k) (f g : FourierL2) : FourierL2 :=
   ⟨fun n => (sobolevProductWeight k n : ℂ) * sobolevProductCoefficient k f g n,
-    by sorry⟩
+    sobolevProduct_memℓp k hk f g⟩
 
 run_cmd Lean.modifyEnv fun env => Lean.Meta.auxLemmasExt.setState env {}
 

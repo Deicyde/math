@@ -46,8 +46,14 @@ theorem continuous_schrodingerMultiplier (n : frequencyLattice) :
 
 /-- Free evolution preserves the norm of every weighted Fourier vector. -/
 noncomputable def schrodingerFlow (t : ℝ) : FourierL2 →ₗᵢ[ℂ] FourierL2 where
-  toFun f := ⟨fun n => schrodingerMultiplier t n * f n,
-    (lp.memℓp f).mono' (by intro n; simp)⟩
+  toFun f := ⟨fun n => schrodingerMultiplier t n * f n, by
+    apply (lp.memℓp f).mono'
+    intro n
+    simp only [norm_mul, schrodingerMultiplier, Complex.norm_exp, Complex.mul_re,
+      Complex.neg_re, Complex.neg_im, Complex.I_re, Complex.I_im,
+      Complex.ofReal_re, Complex.ofReal_im, neg_zero, zero_mul, mul_zero,
+      sub_zero, Real.exp_zero, one_mul]
+    exact le_rfl⟩
   map_add' f g := by
     ext n
     change schrodingerMultiplier t n * (f n + g n) =
@@ -55,13 +61,19 @@ noncomputable def schrodingerFlow (t : ℝ) : FourierL2 →ₗᵢ[ℂ] FourierL2
     exact mul_add _ _ _
   map_smul' c f := by ext n; simp [mul_left_comm]
   norm_map' f := by
+    have hm (n : frequencyLattice) : ‖schrodingerMultiplier t n‖ = 1 := by
+      simp only [schrodingerMultiplier, Complex.norm_exp, Complex.mul_re, Complex.neg_re,
+        Complex.neg_im, Complex.I_re, Complex.I_im, Complex.ofReal_re, Complex.ofReal_im,
+        neg_zero, zero_mul, mul_zero, sub_zero, Real.exp_zero]
     apply le_antisymm
     · apply lp.norm_mono (by norm_num : (2 : ℝ≥0∞) ≠ 0)
       intro n
-      simp
+      change ‖schrodingerMultiplier t n * f n‖ ≤ ‖f n‖
+      rw [norm_mul, hm, one_mul]
     · apply lp.norm_mono (by norm_num : (2 : ℝ≥0∞) ≠ 0)
       intro n
-      simp
+      change ‖f n‖ ≤ ‖schrodingerMultiplier t n * f n‖
+      rw [norm_mul, hm, one_mul]
 
 @[simp] theorem schrodingerFlow_apply (t : ℝ) (f : FourierL2) (n : frequencyLattice) :
     schrodingerFlow t f n = schrodingerMultiplier t n * f n := rfl
