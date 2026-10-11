@@ -102,9 +102,14 @@ noncomputable def sobolevProductCoefficient (k : ℝ) (f g : FourierL2)
     (n : frequencyLattice) : ℂ :=
   ∑' m, sobolevFourierCoefficient k f m * sobolevFourierCoefficient k g (n - m)
 
-noncomputable def sobolevProduct (k : ℝ) (_hk : 6 < k) (f g : FourierL2) : FourierL2 :=
+-- The proof obligation below makes the Sobolev product well typed.
+theorem sobolevProduct_memℓp (k : ℝ) (hk : 6 < k) (f g : FourierL2) :
+    Memℓp (fun n => (sobolevProductWeight k n : ℂ) * sobolevProductCoefficient k f g n) 2 := by
+  sorry
+
+noncomputable def sobolevProduct (k : ℝ) (hk : 6 < k) (f g : FourierL2) : FourierL2 :=
   ⟨fun n => (sobolevProductWeight k n : ℂ) * sobolevProductCoefficient k f g n,
-    by sorry⟩
+    sobolevProduct_memℓp k hk f g⟩
 
 run_cmd Lean.modifyEnv fun env => Lean.Meta.auxLemmasExt.setState env {}
 
@@ -127,15 +132,15 @@ run_cmd Lean.modifyEnv fun env => Lean.Meta.auxLemmasExt.setState env {}
 noncomputable def schrodingerMultiplier (t : ℝ) (n : frequencyLattice) : ℂ :=
   Complex.exp (-Complex.I * ((t * ‖n‖ ^ 2 : ℝ) : ℂ))
 
+@[simp] theorem schrodingerMultiplier_norm (t : ℝ) (n : frequencyLattice) :
+    ‖schrodingerMultiplier t n‖ = 1 := by
+  simp only [schrodingerMultiplier, Complex.norm_exp, Complex.mul_re, Complex.neg_re,
+    Complex.neg_im, Complex.I_re, Complex.I_im, Complex.ofReal_re, Complex.ofReal_im,
+    neg_zero, zero_mul, mul_zero, sub_zero, Real.exp_zero]
+
 noncomputable def schrodingerFlow (t : ℝ) : FourierL2 →ₗᵢ[ℂ] FourierL2 where
-  toFun f := ⟨fun n => schrodingerMultiplier t n * f n, by
-    apply (lp.memℓp f).mono'
-    intro n
-    simp only [norm_mul, schrodingerMultiplier, Complex.norm_exp, Complex.mul_re,
-      Complex.neg_re, Complex.neg_im, Complex.I_re, Complex.I_im,
-      Complex.ofReal_re, Complex.ofReal_im, neg_zero, zero_mul, mul_zero,
-      sub_zero, Real.exp_zero, one_mul]
-    exact le_rfl⟩
+  toFun f := ⟨fun n => schrodingerMultiplier t n * f n,
+    (lp.memℓp f).mono' (by intro n; simp)⟩
   map_add' f g := by
     ext n
     change schrodingerMultiplier t n * (f n + g n) =
@@ -143,19 +148,13 @@ noncomputable def schrodingerFlow (t : ℝ) : FourierL2 →ₗᵢ[ℂ] FourierL2
     exact mul_add _ _ _
   map_smul' c f := by ext n; simp [mul_left_comm]
   norm_map' f := by
-    have hm (n : frequencyLattice) : ‖schrodingerMultiplier t n‖ = 1 := by
-      simp only [schrodingerMultiplier, Complex.norm_exp, Complex.mul_re, Complex.neg_re,
-        Complex.neg_im, Complex.I_re, Complex.I_im, Complex.ofReal_re, Complex.ofReal_im,
-        neg_zero, zero_mul, mul_zero, sub_zero, Real.exp_zero]
     apply le_antisymm
     · apply lp.norm_mono (by norm_num : (2 : ℝ≥0∞) ≠ 0)
       intro n
-      change ‖schrodingerMultiplier t n * f n‖ ≤ ‖f n‖
-      rw [norm_mul, hm, one_mul]
+      simp
     · apply lp.norm_mono (by norm_num : (2 : ℝ≥0∞) ≠ 0)
       intro n
-      change ‖f n‖ ≤ ‖schrodingerMultiplier t n * f n‖
-      rw [norm_mul, hm, one_mul]
+      simp
 
 
 run_cmd Lean.modifyEnv fun env => Lean.Meta.auxLemmasExt.setState env {}

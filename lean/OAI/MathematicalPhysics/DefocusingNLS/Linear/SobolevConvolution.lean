@@ -144,11 +144,15 @@ theorem weighted_sobolevProduct_le_majorant (k : ℝ) (hk : 6 < k) (f g : Fourie
         ((hA.add hB).mul_left _)
     _ = _ := by rw [tsum_mul_left, hA.tsum_add hB, hswap]; ring
 
+/-- The weighted Fourier coefficients of a product are square-summable. -/
+theorem sobolevProduct_memℓp (k : ℝ) (hk : 6 < k) (f g : FourierL2) :
+    Memℓp (fun n => (sobolevProductWeight k n : ℂ) * sobolevProductCoefficient k f g n) 2 :=
+  (lp.memℓp (sobolevProductMajorant k f g)).mono' (weighted_sobolevProduct_le_majorant k hk f g)
+
 /-- Multiplication closes in the original Sobolev Fourier space. -/
 noncomputable def sobolevProduct (k : ℝ) (hk : 6 < k) (f g : FourierL2) : FourierL2 :=
   ⟨fun n => (sobolevProductWeight k n : ℂ) * sobolevProductCoefficient k f g n,
-    (lp.memℓp (sobolevProductMajorant k f g)).mono'
-      (weighted_sobolevProduct_le_majorant k hk f g)⟩
+    sobolevProduct_memℓp k hk f g⟩
 
 theorem sobolevProduct_coefficient (k : ℝ) (hk : 6 < k) (f g : FourierL2)
     (n : frequencyLattice) :
